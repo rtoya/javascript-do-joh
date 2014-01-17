@@ -7,5 +7,39 @@
 <body>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+  <script type="text/javascript">
+    function setTimeout(){
+      var s_hour = 0;
+      var s_min = 0;
+      var interval = (s_hour * 60 + s_min) * 60 *1000;
+
+      setInterval("audio.play()", interval);
+
+    };
+  </script>
+
+  <audio id="audio" src="test.mp3" controls>
+    <p>kaito-sho-jo</p>
+  </audio>
+
+  <form>
+    <select name="set_hour">
+      <option value="0">0</option>
+      <option value="1" selected>1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+    <nobr>時間</nobr>
+    <select name="set_min">
+      <option value="0">0</option>
+      <option value="6">30</option>
+    </select>
+    <nobr>分ごとにアラートが鳴ります</nobr>
+    <input type="button" value="set" onclick="start_func()">
+  </form>
 </body>
 </html>
