@@ -5,20 +5,40 @@
   <title></title>
 </head>
 <body>
-
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
   <script type="text/javascript">
+
+   //youtubeを再生するよう
+     var tag = document.createElement('script');
+     tag.src = "//www.youtube.com/iframe_api";
+     var firstScriptTag = document.getElementsByTagName('script')[0];
+     firstScriptTag.parentNode.insertBefore(tag,  firstScriptTag);
+     var done = false;
+     var player;
+       function onYouTubeIframeAPIReady() {
+         player = new YT.Player('player',  {
+           height: '390',
+           width: '640',
+           videoId: 'pFhYe97dbvE',
+           events: {
+             'onReady': onPlayerReady,
+             'onStateChange': onPlayerStateChange
+           }
+         });
+       }
+
+    //寝落ちしてからアラートが鳴るまでの時間を設定
     function start_func(){
-      var s_hour = 0;
-      var s_min = 0.1;
-      var interval = (s_hour * 60 + s_min) * 60 *1000;
-
+      var s_hour = $("select[name='set_hour']").val();
+      var s_min = $("select[name='set_min']").val();
+      var interval = (s_hour * 60) + s_min *1000;
       setInterval("audio.play()", interval);
-
     };
   </script>
 
+  <iframe width="640" height="360" src="http://www.youtube.com/embed/pFhYe97dbvE" frameborder="0" allowfullscreen></iframe>
+
+  <div id="player"></div>
   <audio id="audio" src="test.mp3" controls>
     <p>kaito-sho-jo</p>
   </audio>
@@ -36,6 +56,7 @@
     <nobr>時間</nobr>
     <select name="set_min">
       <option value="0">0</option>
+      <option value="5">5</option>
       <option value="6">30</option>
     </select>
     <nobr>分ごとにアラートが鳴ります</nobr>
