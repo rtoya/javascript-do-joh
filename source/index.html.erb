@@ -1,12 +1,12 @@
 <canvas id="inputCanvas" width="320" height="240" style="display:none"></canvas>
 <video id="inputVideo" autoplay loop></video>
-<button type="button" id="js-stopTracking">監視を停止</button>
-<button type="button" id="js-startTracking">監視を再開</button>
+<button type="button" id="js-stopTracking" style="display:none" >監視を停止</button>
+<button type="button" id="js-startTracking" style="display:none" >監視を再開</button>
 <p id="js-detectStatus"></p>
 
 <%= javascript_include_tag "headtrackr.min" %>
-
 <script>
+    /*
 var videoInput = document.getElementById('inputVideo');
 var canvasInput = document.getElementById('inputCanvas');
 var htracker = new headtrackr.Tracker();
@@ -24,7 +24,7 @@ document.addEventListener("headtrackrStatus", function(event){
   }
 
   if(undetected_number_of_times == 20){
-    alert("起きろ起きろ");
+    audio.play();
   }
 });
 
@@ -39,10 +39,12 @@ monitor_stop_btn.addEventListener("click", function(){
 monitor_start_btn.addEventListener("click", function(){
   htracker.start();
 });
+*/
 </script>
 
 <script type="text/javascript">
-//youtubeを再生するよう
+    //youtubeを再生するよう
+/*
 var tag = document.createElement('script');
 tag.src = "//www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -60,24 +62,56 @@ function onYouTubeIframeAPIReady() {
     }
   });
 }
-
+*/
 //寝落ちしてからアラートが鳴るまでの時間を設定
 function start_func(){
   var s_hour = $("select[name='set_hour']").val();
   var s_min = $("select[name='set_min']").val();
-  var interval = (s_hour * 60) + s_min *1000;
-  setInterval("audio.play()", interval);
+  var interval = (s_hour * 60 + s_min) * 30;
+
+  var videoInput = document.getElementById('inputVideo');
+  var canvasInput = document.getElementById('inputCanvas');
+  var htracker = new headtrackr.Tracker();
+
+  var undetected_number_of_times = 0;
+
+
+  document.addEventListener("headtrackrStatus", function(event){
+  if(event.status == "hints"){
+    undetected_number_of_times += 1;
+  }else if(event.status == "found"){
+    undetected_number_of_times = 0;
+  }else{
+    return false;
+  }
+
+  if(undetected_number_of_times == interval){
+    audio.play();
+  }
+});
+
+htracker.init(videoInput, canvasInput);
+htracker.start();
+$("#js-startTracking").show();
+$("#js-stopTracking").show();
+var monitor_stop_btn = document.getElementById('js-stopTracking');
+var monitor_start_btn = document.getElementById('js-startTracking');
+monitor_stop_btn.addEventListener("click", function(){
+  htracker.stop();
+});
+monitor_start_btn.addEventListener("click", function(){
+  htracker.start();
+});
+
 };
 </script>
 
-<iframe width="640" height="360" src="http://www.youtube.com/embed/pFhYe97dbvE" frameborder="0" allowfullscreen></iframe>
-
-<div id="player"></div>
-<audio id="audio" src="test.mp3" controls>
+<audio id="audio" src="test.mp3" style="visibility:hidden" controls>
   <p>kaito-sho-jo</p>
 </audio>
 
 <form>
+<nobr>寝落ちしたらだいたい</nobr>
   <select name="set_hour">
     <option value="0">0</option>
     <option value="1" selected>1</option>
@@ -90,9 +124,9 @@ function start_func(){
   <nobr>時間</nobr>
   <select name="set_min">
     <option value="0">0</option>
-    <option value="5">5</option>
-    <option value="6">30</option>
+    <option value="1">1</option>
+    <option value="30">30</option>
   </select>
-  <nobr>分ごとにアラートが鳴ります</nobr>
+  <nobr>分後に起こしますー</nobr>
   <input type="button" value="set" onclick="start_func()">
 </form>
